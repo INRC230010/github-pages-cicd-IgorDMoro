@@ -1,0 +1,63 @@
+name: Deploy Nuxt Site to GitHub Pages
+
+on:
+  # Dispara o workflow quando houver um push na branch 'main'
+  push:
+    branches: ["main"] # ATENÇÃO: Mude para 'master' se essa for sua branch principal
+
+  # Permite que você dispare este workflow manualmente pela aba Actions
+  workflow_dispatch:
+
+# Define as permissões necessárias para o deploy no GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # O seu package.json especifica o uso do pnpm
+      - name: Setup Node.js e pnpm
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Recomendado usar uma versão LTS
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      # O script 'generate' no seu package.json executa 'nuxi generate'
+      # Esta variável de ambiente é CRUCIAL para o GitHub Pages
+      - name: Static Site Generation (SSG)
+        run: pnpm generate
+        env:
+          # Define o caminho base para o nome do seu repositório
+          # Ex: https://<username>.github.io/<repo-name>/
+          NUXT_APP_BASE_URL: /${{ github.event.repository.name }}/
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # O Nuxt 3+ gera o build estático na pasta '.output/public' por padrão
+          path: .output/public
+
+  deploy:
+    # Este job só roda depois que o job 'build' for concluído
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        
