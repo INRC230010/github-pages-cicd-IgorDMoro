@@ -1,14 +1,10 @@
 name: Deploy Nuxt Site to GitHub Pages
 
 on:
-  # Dispara o workflow quando houver um push na branch 'main'
   push:
-    branches: ["main"] # ATENÇÃO: Mude para 'master' se essa for sua branch principal
-
-  # Permite que você dispare este workflow manualmente pela aba Actions
+    branches: ["main"] # ou 'master'
   workflow_dispatch:
 
-# Define as permissões necessárias para o deploy no GitHub Pages
 permissions:
   contents: read
   pages: write
@@ -21,23 +17,30 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # O seu package.json especifica o uso do pnpm
-      - name: Setup Node.js e pnpm
+      # --- INÍCIO DA CORREÇÃO ---
+      # 1. Adicionamos esta etapa para instalar o pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          # Esta flag evita que ele rode 'pnpm install' automaticamente
+          # Vamos fazer isso manualmente no próximo passo
+          run_install: false 
+
+      # 2. A etapa 'setup-node' agora encontra o pnpm instalado
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Recomendado usar uma versão LTS
-          cache: 'pnpm'
+          node-version: '20'
+          cache: 'pnpm' # Informa ao setup-node para usar o cache do pnpm
+      # --- FIM DA CORREÇÃO ---
 
       - name: Install Dependencies
         run: pnpm install
 
-      # O script 'generate' no seu package.json executa 'nuxi generate'
-      # Esta variável de ambiente é CRUCIAL para o GitHub Pages
       - name: Static Site Generation (SSG)
         run: pnpm generate
         env:
-          # Define o caminho base para o nome do seu repositório
-          # Ex: https://<username>.github.io/<repo-name>/
+          # Isso continua correto para o seu repositório
           NUXT_APP_BASE_URL: /${{ github.event.repository.name }}/
 
       - name: Setup GitHub Pages
@@ -46,11 +49,9 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # O Nuxt 3+ gera o build estático na pasta '.output/public' por padrão
           path: .output/public
 
   deploy:
-    # Este job só roda depois que o job 'build' for concluído
     needs: build
     runs-on: ubuntu-latest
     environment:
