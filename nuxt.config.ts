@@ -4,6 +4,10 @@ export default defineNuxtConfig({
   app: {
     baseURL: '/github-pages-cicd-IgorDMoro/'
   },
+  
+    devtools: {
+    enabled: true
+  },
 
   modules: [
     '@nuxt/eslint',
@@ -15,9 +19,7 @@ export default defineNuxtConfig({
     'motion-v/nuxt'
   ],
 
-  devtools: {
-    enabled: true
-  },
+
 
   css: ['~/assets/css/main.css'],
 
