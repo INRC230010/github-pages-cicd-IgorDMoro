@@ -14,10 +14,6 @@ export default defineNuxtConfig({
     enabled: true
   },
 
-  app: {
-    baseURL: '/github-pages-cicd-IgorDMoro/'
-  },
-
   css: ['~/assets/css/main.css'],
 
   compatibilityDate: '2024-11-01',
