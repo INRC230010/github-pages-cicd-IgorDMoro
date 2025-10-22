@@ -1,12 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  // ADICIONE ESTE BLOCO 'app'
   app: {
     baseURL: '/github-pages-cicd-IgorDMoro/'
-  },
-  
-    devtools: {
-    enabled: true
   },
 
   modules: [
@@ -19,7 +14,9 @@ export default defineNuxtConfig({
     'motion-v/nuxt'
   ],
 
-
+  devtools: {
+    enabled: true
+  },
 
   css: ['~/assets/css/main.css'],
 
