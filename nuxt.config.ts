@@ -10,12 +10,12 @@ export default defineNuxtConfig({
     'motion-v/nuxt'
   ],
 
-  app: {
-    baseURL: '/github-pages-cicd-IgorDMoro/'
-  },
-
   devtools: {
     enabled: true
+  },
+
+  app: {
+    baseURL: '/github-pages-cicd-IgorDMoro/'
   },
 
   css: ['~/assets/css/main.css'],
