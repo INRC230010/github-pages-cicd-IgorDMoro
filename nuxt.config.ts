@@ -1,9 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  app: {
-    baseURL: '/github-pages-cicd-IgorDMoro/'
-  },
-
   modules: [
     '@nuxt/eslint',
     '@nuxt/image',
@@ -13,6 +9,10 @@ export default defineNuxtConfig({
     'nuxt-og-image',
     'motion-v/nuxt'
   ],
+
+  app: {
+    baseURL: '/github-pages-cicd-IgorDMoro/'
+  },
 
   devtools: {
     enabled: true
